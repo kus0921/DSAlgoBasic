@@ -1,0 +1,49 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+public class FileReadDemo {
+
+    public static void main(String[] args) throws IOException {
+
+        // BufferedReader
+/* List<String> wordList = readFile();
+ Map<String,Long> map = wordList.stream().collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
+ System.out.println("map " + map);*/
+
+
+        //Stream
+        Files.lines(Paths.get("C:\\Users\\Krishna_Ahirwar\\Desktop\\INTR\\epmt-inrt\\MustPracticeProblems\\src\\data.txt"))  //get lines stream using Files.lines
+                .map((input)->Arrays.asList(input.split(" ")))								// convert lines to list of words																			// flatMap words to combine 
+                .flatMap(x->x.stream())
+                .collect(Collectors.groupingBy(Function.identity(),Collectors.counting()))   				// 
+                .forEach((key,value)->System.out.print(key+" : "+value+", "));
+
+
+    }
+
+
+    private static List<String> readFile() throws IOException
+    {
+        try (BufferedReader br = new BufferedReader(new FileReader(new File("C:\\Users\\Krishna_Ahirwar\\Desktop\\INTR\\epmt-inrt\\MustPracticeProblems\\src\\data.txt"))))
+        {
+            String line="";
+            ArrayList<String> list = new ArrayList<>();
+            while ((line = br.readLine()) != null)
+            {
+                String[] strings = line.split(" ");
+                list.addAll(Arrays.asList(strings));
+            }
+            return list;
+        }
+    }
+    }

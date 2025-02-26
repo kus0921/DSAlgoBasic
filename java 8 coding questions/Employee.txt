@@ -1,0 +1,103 @@
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+ class PracticalExamples2 {
+    public static void main(String[] args) {
+        // basic functions  peek, limit, skip, filter, distinct, map, flatMap, boxed, sorted, count, min, max, forEach
+        int[] int1 = {1, 2, 2, 3, 4, 5, 5, 6};
+        //
+        OptionalInt maxElement = Arrays.stream(int1).distinct()
+                .peek(System.out::println)
+                .filter(t -> t % 2 != 0)
+                .peek(System.out::println)
+                .findFirst();
+
+        int1 = new int[]{12, 11, 13, 4, 15, 25, 6};
+        List<Integer> sortedList = Arrays.stream(int1)
+                .peek(System.out::println)
+                .sorted() // as sorted() needs all the elements for sorting, all elements pass in one go through first peek
+                .peek(System.out::println) // as toList() also needs all the elements to make a collection
+                .boxed().toList();
+    }
+}
+
+class ContactInfo {
+
+    List<String> emails;
+
+    public ContactInfo(List<String> emails) {
+        this.emails = emails;
+    }
+
+    @Override
+    public String toString() {
+        return "ContactInfo{" +
+                "emails=" + emails +
+                '}';
+    }
+
+    public List<String> getEmails() {
+        return emails;
+    }
+
+    public void setEmails(List<String> emails) {
+        this.emails = emails;
+    }
+}
+
+public class Employee {
+    private String name;
+    private ContactInfo contactInfo;
+
+    public Employee() {
+    }
+
+    public Employee(String name, ContactInfo contactInfo) {
+        this.name = name;
+        this.contactInfo = contactInfo;
+    }
+
+    public static void main(String[] args) {
+        Employee emp1 = new Employee("first", new ContactInfo(Arrays.asList("amar@gmail.com", "amar@epam.com")));
+        Employee emp2 = new Employee("second", new ContactInfo(Arrays.asList("second@Gmail.com", "second@EPAM.com")));
+        Employee employee3 = new Employee("third", new ContactInfo(Arrays.asList("third@Yahoo.com", "third@facebook.com")));
+        Employee employee4 = new Employee("fourth", new ContactInfo(Arrays.asList("third@Yahoo.com", null)));
+        Employee employee5 = new Employee("fifth", null);
+        Employee employee6 = new Employee("sixth", new ContactInfo(null));
+        System.out.print(countTheNumberOfUniqueDomains(Arrays.asList(emp1, emp2, employee3, employee4, employee5, null, employee6)).toString());
+    }
+
+    private static Map<String, Long> countTheNumberOfUniqueDomains(List<Employee> employees) {
+        // write your code here.>
+        Map<String, Long> hm = new HashMap<>();
+        hm = employees.stream()
+                .filter(Objects::nonNull)
+                .map(Employee::getContactInfo)
+                .filter(Objects::nonNull)
+                .map(ContactInfo::getEmails)
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .map(s -> (s.substring(s.indexOf('@'))).toLowerCase())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        return hm;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "name='" + name + '\'' +
+                ", contactInfo=" + contactInfo +
+                '}';
+    }
+
+    public String getName() {
+        return name;
+    }
+    //expected output : { "epam.com:2, "gmail.com":2, "yahoo.com":2, "facebook.com":1}
+
+    public ContactInfo getContactInfo() {
+        return contactInfo;
+    }
+}
+

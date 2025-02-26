@@ -1,0 +1,18 @@
+1)
+
+ 
+
+Person{
+   id,
+   name,
+   Country,
+   dob;
+   }
+
+   Map<String,List<Person>
+
+ 
+
+Get a Map with Country wise List of Person List. Also aked to write it in without Streams.
+
+ 
